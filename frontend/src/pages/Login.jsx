@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Logo from "../assets/DesignSystem/logo_completo1.png";
+import Logo from "../assets/logo_completo1.png";
 
 export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
@@ -22,7 +22,7 @@ export default function Login({ setUser }) {
   return (
     <div className="flex h-screen w-screen font-sans">
       {/* Panel izquierdo */}
-      <div className="w-1/2 flex flex-col items-center justify-center bg-gradient-to-br from-[#0057ff] to-[#8b00ff] relative text-white">
+      <div className="w-1/2 flex flex-col justify-center items-center bg-[linear-gradient(135deg,#0057ff_0%,#8b00ff_100%)] text-white relative">
         <div className="flex flex-col items-center text-center px-8">
           <img
             src={Logo}
@@ -33,13 +33,13 @@ export default function Login({ setUser }) {
             Tu seguro, más simple con Live.
           </p>
         </div>
-        <div className="absolute bottom-4 text-white/70 text-xs">
+        <span className="absolute bottom-4 text-white/70 text-xs">
           Cotizador 1.0 — Live Seguros
-        </div>
+        </span>
       </div>
 
       {/* Panel derecho */}
-      <div className="w-1/2 flex items-center justify-center bg-white">
+      <div className="w-1/2 flex justify-center items-center bg-white">
         <form
           onSubmit={handleLogin}
           className="bg-gray-50 border border-gray-200 p-10 rounded-2xl shadow-xl w-96"
@@ -70,7 +70,7 @@ export default function Login({ setUser }) {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#0057ff] to-[#8b00ff] text-white py-3 rounded-lg hover:opacity-90 transition"
+            className="w-full bg-[linear-gradient(90deg,#0057ff_0%,#8b00ff_100%)] text-white py-3 rounded-lg hover:opacity-90 transition"
           >
             Entrar
           </button>
