@@ -1,22 +1,37 @@
 import React, { useState } from "react";
 import Logo from "../assets/logo_completo1.png";
 
-export default function Login({ setUser }) {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [mensaje, setMensaje] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
-    if (res.ok) setUser(await res.json());
-    else setError("Credenciales inválidas");
+    setMensaje("");
+
+    try {
+      const res = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMensaje(data.mensaje || "Login exitoso");
+        // ejemplo de redirección futura:
+        // window.location.href = "/dashboard";
+      } else {
+        setError(data.error || "Credenciales inválidas");
+      }
+    } catch (err) {
+      setError("Error al conectar con el servidor");
+      console.error(err);
+    }
   };
 
   return (
@@ -66,6 +81,12 @@ export default function Login({ setUser }) {
 
           {error && (
             <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+          )}
+
+          {mensaje && (
+            <p className="text-green-600 text-sm text-center mb-4">
+              {mensaje}
+            </p>
           )}
 
           <button
