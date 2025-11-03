@@ -1,90 +1,100 @@
-import React from "react";
-import { Home, FileText, ShieldCheck, Users, Settings, LogOut } from "lucide-react";
-import Logo from "../assets/logo_completo1.png";
+import React, { useEffect, useState } from "react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Users, FileText, Shield, Clipboard } from "lucide-react";
 
 export default function Dashboard({ user, setUser }) {
+  const [indicadores, setIndicadores] = useState({ uf: 0, usd: 0 });
+
+  useEffect(() => {
+    fetch("/api/indicadores")
+      .then((r) => r.json())
+      .then((d) => setIndicadores(d))
+      .catch(() => setIndicadores({ uf: 0, usd: 0 }));
+  }, []);
+
   const logout = async () => {
     await fetch("/api/logout", { method: "POST", credentials: "include" });
     setUser(null);
   };
 
-  const menu = [
-    { icon: <Home size={18} />, label: "Dashboard" },
-    { icon: <FileText size={18} />, label: "Cotizaciones" },
-    { icon: <ShieldCheck size={18} />, label: "Pólizas" },
-    { icon: <Users size={18} />, label: "Clientes" },
-    { icon: <Settings size={18} />, label: "Configuración" },
+  // Datos simulados
+  const data = [
+    { name: "Ene", cotizaciones: 12, polizas: 8 },
+    { name: "Feb", cotizaciones: 18, polizas: 10 },
+    { name: "Mar", cotizaciones: 25, polizas: 14 },
+    { name: "Abr", cotizaciones: 22, polizas: 11 },
+  ];
+
+  const cards = [
+    { title: "Cotizaciones", value: 182, icon: <Clipboard size={28} /> },
+    { title: "Pólizas", value: 96, icon: <Shield size={28} /> },
+    { title: "Clientes", value: 74, icon: <Users size={28} /> },
+    { title: "Usuarios", value: 5, icon: <FileText size={28} /> },
   ];
 
   return (
-    <div className="flex h-screen bg-gray-100 text-gray-800">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-60 bg-gradient-to-br from-blue-700 to-purple-700 text-white flex flex-col">
-        <div className="flex items-center justify-center h-24 border-b border-white/20">
-          <img src={Logo} alt="Live Seguros" className="w-28 drop-shadow-lg" />
-        </div>
-        <nav className="flex-1 px-4 py-6 space-y-2">
-          {menu.map((item, i) => (
-            <button
-              key={i}
-              className="flex items-center w-full gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
-            >
-              {item.icon}
-              <span className="text-sm font-light">{item.label}</span>
+      <aside className="w-60 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-4 flex flex-col">
+        <div className="text-2xl font-bold mb-6">Live Seguros</div>
+        <nav className="flex flex-col gap-4">
+          {["Dashboard", "Cotizaciones", "Pólizas", "Clientes", "Configuración"].map((item) => (
+            <button key={item} className="text-left hover:bg-white/10 p-2 rounded transition">
+              {item}
             </button>
           ))}
         </nav>
-        <div className="border-t border-white/20 p-4">
-          <button
-            onClick={logout}
-            className="flex items-center gap-2 text-sm text-white/90 hover:text-white transition-colors"
-          >
-            <LogOut size={18} />
-            Cerrar sesión
-          </button>
-        </div>
       </aside>
 
-      {/* Contenido principal */}
-      <div className="flex-1 flex flex-col">
-        {/* Navbar superior */}
-        <header className="flex justify-between items-center bg-white h-16 px-6 shadow-sm">
-          <h1 className="text-lg font-semibold">Panel principal</h1>
+      {/* Main */}
+      <main className="flex-1 flex flex-col">
+        {/* Navbar */}
+        <header className="flex justify-between items-center bg-white p-4 shadow">
+          <div>
+            <h1 className="text-xl font-semibold">Dashboard</h1>
+            <p className="text-sm text-gray-500">
+  UF: {indicadores.uf.toLocaleString("es-CL")} | USD: {indicadores.usd.toLocaleString("es-CL")}
+</p>
+<p className="text-xs text-gray-400">
+  Fuente: {indicadores.fuente || "—"} · {new Date(indicadores.fecha).toLocaleDateString("es-CL")}
+</p>
 
-          <div className="flex items-center gap-6">
-            {/* Indicadores UF / USD */}
-            <div className="flex gap-4 text-sm text-gray-600">
-              <span>UF: —</span>
-              <span>USD: —</span>
-            </div>
-
-            {/* Usuario */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-700">{user?.nombre}</span>
-            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-gray-700">{user?.nombre ?? "Usuario"}</span>
+            <button onClick={logout} className="bg-red-500 text-white px-3 py-1 rounded">Salir</button>
           </div>
         </header>
 
-        {/* Área de contenido */}
-        <main className="flex-1 p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl shadow p-5 flex flex-col justify-center text-center">
-            <h3 className="text-gray-500 text-sm mb-1">Cotizaciones</h3>
-            <p className="text-2xl font-semibold text-gray-800">0</p>
+        {/* Cards */}
+        <section className="grid grid-cols-4 gap-4 p-6">
+          {cards.map((c) => (
+            <div key={c.title} className="bg-white p-4 rounded-2xl shadow flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">{c.title}</p>
+                <p className="text-2xl font-semibold">{c.value}</p>
+              </div>
+              <div className="text-blue-600">{c.icon}</div>
+            </div>
+          ))}
+        </section>
+
+        {/* Gráfico */}
+        <section className="flex-1 p-6">
+          <div className="bg-white rounded-2xl shadow p-4 h-full">
+            <h2 className="text-lg font-semibold mb-4">Evolución mensual (simulada)</h2>
+            <ResponsiveContainer width="100%" height="90%">
+              <BarChart data={data}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="cotizaciones" fill="#2563eb" />
+                <Bar dataKey="polizas" fill="#9333ea" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-          <div className="bg-white rounded-xl shadow p-5 flex flex-col justify-center text-center">
-            <h3 className="text-gray-500 text-sm mb-1">Pólizas</h3>
-            <p className="text-2xl font-semibold text-gray-800">0</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-5 flex flex-col justify-center text-center">
-            <h3 className="text-gray-500 text-sm mb-1">Clientes</h3>
-            <p className="text-2xl font-semibold text-gray-800">0</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-5 flex flex-col justify-center text-center">
-            <h3 className="text-gray-500 text-sm mb-1">Usuarios</h3>
-            <p className="text-2xl font-semibold text-gray-800">0</p>
-          </div>
-        </main>
-      </div>
+        </section>
+      </main>
     </div>
   );
 }
