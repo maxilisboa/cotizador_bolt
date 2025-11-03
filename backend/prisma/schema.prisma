@@ -9,11 +9,25 @@ datasource db {
 }
 
 model Usuario {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  email     String   @unique
-  pass      String
-  cargo     String?
-  creadoEn  DateTime @default(now())
+  id       Int      @id @default(autoincrement())
+  nombre   String
+  email    String   @unique
+  pass     String
+  cargo    String?
+  creadoEn DateTime @default(now())
 }
 
+model Mora {
+  id             Int       @id @default(autoincrement())
+  ramo           String
+  poliza         Int
+  rut_titular    String
+  nombre_titular String
+  tipo_doc       String
+  cuota          Int
+  monto          Decimal   @db.Decimal(10, 6)
+  moneda         String
+  fecha_venc     DateTime  @db.Date
+  estado         String
+  creado_en      DateTime? @default(now()) @db.Timestamp(6)
+}
