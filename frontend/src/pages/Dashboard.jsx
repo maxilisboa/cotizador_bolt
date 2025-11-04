@@ -1,39 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Users, FileText, Shield, Clipboard } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, Navigate, Outlet } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Clipboard,
+  Shield,
+  Users,
+  Percent,
+  LogOut,
+} from "lucide-react";
 
 export default function Dashboard({ user, setUser }) {
-  const [indicadores, setIndicadores] = useState({
-    uf: 0,
-    usd: 0,
-    fecha: "",
-    fuente: "",
-  });
-  const [datos, setDatos] = useState({
-    cotizaciones: 0,
-    polizas: 0,
-    clientes: 0,
-    usuarios: 0,
-    moras: 0,
-  });
+  const location = useLocation();
+  if (!user) return <Navigate to="/" replace />;
 
-  // --- Cargar indicadores UF/USD ---
-  useEffect(() => {
-    fetch("/api/indicadores")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => d && setIndicadores(d))
-      .catch((e) => {
-        console.error("Error al obtener indicadores:", e);
-        setIndicadores({ uf: 0, usd: 0, fecha: "", fuente: "—" });
-      });
-  }, []);
-
-  // --- Cargar datos base del Dashboard ---
+  // === Moras desde backend ===
+  const [moras, setMoras] = useState("—");
   useEffect(() => {
     fetch("/api/dashboard", { credentials: "include" })
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => d && setDatos(d))
-      .catch((e) => console.error("Error al obtener datos del dashboard:", e));
+      .then((d) => {
+        if (d && typeof d.moras !== "undefined") setMoras(d.moras);
+      })
+      .catch(() => setMoras("—"));
   }, []);
 
   const logout = async () => {
@@ -41,104 +29,113 @@ export default function Dashboard({ user, setUser }) {
     setUser(null);
   };
 
-  // --- Datos simulados del gráfico (visual) ---
-  const data = [
-    { name: "Ene", cotizaciones: 12, polizas: 8 },
-    { name: "Feb", cotizaciones: 18, polizas: 10 },
-    { name: "Mar", cotizaciones: 25, polizas: 14 },
-    { name: "Abr", cotizaciones: 22, polizas: 11 },
+  const routes = [
+    { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { to: "/cotizaciones", icon: Clipboard, label: "Cotizaciones" },
+    { to: "/polizas", icon: Shield, label: "Pólizas" },
+    { to: "/clientes", icon: Users, label: "Clientes" },
+    { to: "comisiones", icon: Percent, label: "Comisiones" },
   ];
 
-  // --- Cards principales ---
-  const cards = [
-    { title: "Cotizaciones", value: datos.cotizaciones, icon: <Clipboard size={28} /> },
-    { title: "Pólizas", value: datos.polizas, icon: <Shield size={28} /> },
-    { title: "Clientes", value: datos.clientes, icon: <Users size={28} /> },
-    { title: "Usuarios", value: datos.usuarios, icon: <FileText size={28} /> },
-    { title: "Moras pendientes", value: datos.moras, icon: <Shield size={28} /> },
-  ];
+  const NavItem = ({ to, icon: Icon, label }) => {
+    const active = location.pathname.startsWith(to);
+    return (
+      <Link
+        to={to}
+        className={[
+          "flex items-center gap-3 px-4 py-2 rounded-lg transition-colors",
+          "text-white/90 hover:text-white hover:bg-white/10",
+          active ? "bg-white/15 text-white font-medium" : "",
+        ].join(" ")}
+      >
+        <Icon size={20} />
+        <span className="text-sm">{label}</span>
+      </Link>
+    );
+  };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="min-h-screen flex">
       {/* Sidebar */}
-      <aside className="w-60 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-4 flex flex-col">
-        <div className="text-2xl font-bold mb-6">Live Seguros</div>
-        <nav className="flex flex-col gap-4">
-          {["Dashboard", "Cotizaciones", "Pólizas", "Clientes", "Configuración"].map(
-            (item) => (
-              <button
-                key={item}
-                className="text-left hover:bg-white/10 p-2 rounded transition"
-              >
-                {item}
-              </button>
-            )
-          )}
+      <aside className="w-60 shrink-0 bg-gradient-to-b from-blue-600 to-indigo-700 text-white p-4">
+        <div className="px-2 py-3 mb-4">
+          <div className="text-lg font-semibold leading-tight">Live Seguros</div>
+          <div className="text-xs text-white/80">Cotizador 1.0</div>
+        </div>
+
+        <nav className="space-y-1">
+          {routes.map((r) => (
+            <NavItem key={r.to} {...r} />
+          ))}
         </nav>
+
+        <button
+          onClick={logout}
+          className="mt-6 flex items-center gap-2 px-4 py-2 w-full rounded-lg bg-white/10 hover:bg-white/15 text-white transition-colors"
+        >
+          <LogOut size={18} />
+          <span className="text-sm">Cerrar sesión</span>
+        </button>
       </aside>
 
-      {/* Main */}
-      <main className="flex-1 flex flex-col">
-        {/* Navbar */}
-        <header className="flex justify-between items-center bg-white p-4 shadow">
-          <div>
-            <h1 className="text-xl font-semibold">Dashboard</h1>
-            <p className="text-sm text-gray-500">
-              UF: {indicadores.uf.toLocaleString("es-CL")} | USD:{" "}
-              {indicadores.usd.toLocaleString("es-CL")}
-            </p>
-            <p className="text-xs text-gray-400">
-              Fuente: {indicadores.fuente || "—"} ·{" "}
-              {indicadores.fecha
-                ? new Date(indicadores.fecha).toLocaleDateString("es-CL")
-                : ""}
-            </p>
+      {/* Contenido */}
+      <main className="flex-1 bg-gray-50">
+        {/* Header con indicadores */}
+        <header className="bg-white shadow p-6 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-semibold">
+              {location.pathname.includes("/dashboard/comisiones")
+                ? "Comisiones"
+                : "Dashboard"}
+            </h1>
+            <div className="text-sm text-gray-600">
+              {user?.nombre ? `Conectado: ${user.nombre}` : ""}
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-gray-700">{user?.nombre ?? "Usuario"}</span>
-            <button
-              onClick={logout}
-              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-            >
-              Salir
-            </button>
+
+          {/* Indicadores UF/USD */}
+          <div className="flex flex-wrap items-center gap-8">
+            <Indicator label="UF" value="39.612,97" />
+            <Indicator label="USD" value="$943,69" />
           </div>
         </header>
 
-        {/* Cards */}
-        <section className="grid grid-cols-5 gap-4 p-6">
-          {cards.map((c) => (
-            <div
-              key={c.title}
-              className="bg-white p-4 rounded-2xl shadow flex items-center justify-between"
-            >
-              <div>
-                <p className="text-sm text-gray-500">{c.title}</p>
-                <p className="text-2xl font-semibold">{c.value}</p>
-              </div>
-              <div className="text-blue-600">{c.icon}</div>
-            </div>
-          ))}
-        </section>
-
-        {/* Gráfico */}
-        <section className="flex-1 p-6">
-          <div className="bg-white rounded-2xl shadow p-4 h-full">
-            <h2 className="text-lg font-semibold mb-4">
-              Evolución mensual (simulada)
-            </h2>
-            <ResponsiveContainer width="100%" height="90%">
-              <BarChart data={data}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="cotizaciones" fill="#2563eb" />
-                <Bar dataKey="polizas" fill="#9333ea" />
-              </BarChart>
-            </ResponsiveContainer>
+        <section className="p-6 space-y-6">
+          {/* Cards métricas */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card title="Cotizaciones" value="—" />
+            <Card title="Pólizas" value="—" />
+            <Card title="Clientes" value="—" />
+            <Card title="Moras" value={moras} />
           </div>
+
+          {/* Rutas hijas, ej: /dashboard/comisiones */}
+          <Outlet />
         </section>
       </main>
+    </div>
+  );
+}
+
+function Card({ title, value }) {
+  return (
+    <div className="bg-white rounded-xl shadow-md p-4">
+      <div className="text-sm text-gray-500">{title}</div>
+      <div className="text-2xl font-semibold mt-1">{value}</div>
+    </div>
+  );
+}
+
+function Indicator({ label, value, date }) {
+  return (
+    <div className="flex flex-col items-start">
+      <div className="flex items-baseline gap-2">
+        <span className="text-[11px] text-gray-500">{label}:</span>
+        <span className="text-base font-semibold text-gray-800 leading-tight">
+          {value}
+        </span>
+      </div>
+      <span className="text-[9px] text-gray-400 ml-1">{date}</span>
     </div>
   );
 }
