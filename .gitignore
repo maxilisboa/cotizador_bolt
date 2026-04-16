@@ -1,0 +1,11 @@
+# Dependencias (Evita el Error 126 en Vercel)
+node_modules/
+
+# Variables de entorno (Seguridad de llaves)
+.env
+.local
+.env.local
+.env.*.local
+
+# Archivos de construcción
+dist/
