@@ -5,6 +5,7 @@ export const vendedoresService = {
     const { data, error } = await supabase
       .from('vendedores')
       .select('*')
+      .eq('activo', true)
       .order('nombre');
 
     if (error) throw error;
@@ -37,7 +38,7 @@ export const vendedoresService = {
   async delete(id) {
     const { error } = await supabase
       .from('vendedores')
-      .delete()
+      .update({ activo: false })
       .eq('id', id);
 
     if (error) throw error;
