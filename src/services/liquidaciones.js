@@ -267,7 +267,7 @@ export function generarPDFLiquidacion(liquidacion) {
           padding: 3px 10px;
         }
         .section-title {
-          background-color: #8B4789;
+          background-color: #6366f1;
           color: white;
           padding: 8px;
           text-align: center;
@@ -288,7 +288,7 @@ export function generarPDFLiquidacion(liquidacion) {
           font-weight: bold;
         }
         .honorarios-table .total {
-          background-color: #8B4789;
+          background-color: #6366f1;
           color: white;
           font-weight: bold;
         }
@@ -300,7 +300,7 @@ export function generarPDFLiquidacion(liquidacion) {
           margin-top: 10px;
         }
         .detalle-table th {
-          background-color: #2c3e50;
+          background-color: #1e293b;
           color: white;
           padding: 8px 4px;
           border: 1px solid #ddd;
@@ -312,10 +312,11 @@ export function generarPDFLiquidacion(liquidacion) {
           text-align: center;
         }
         .detalle-table .pink-row {
-          background-color: #f8b6d9;
+          background-color: #f8fafc;
+          border: 1px solid #e2e8f0;
         }
         .detalle-table .total-row {
-          background-color: #8B4789;
+          background-color: #6366f1;
           color: white;
           font-weight: bold;
         }
@@ -323,7 +324,7 @@ export function generarPDFLiquidacion(liquidacion) {
           text-align: right;
         }
         .vendor-title {
-          background-color: #8B4789;
+          background-color: #6366f1;
           color: white;
           padding: 8px;
           font-weight: bold;

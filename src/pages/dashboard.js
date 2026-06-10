@@ -34,7 +34,7 @@ export async function renderDashboard() {
       <div class="app-layout">
         <aside class="sidebar">
           <div class="sidebar-header">
-            <h2>Seguros LIVE</h2>
+            <img src="/logo-blanco-sin-fondo.png" alt="Seguros LIVE" />
           </div>
           <nav class="sidebar-nav">
             <a href="#" class="nav-item ${currentView === 'home' ? 'active' : ''}" data-view="home">
@@ -54,6 +54,7 @@ export async function renderDashboard() {
               </svg>
               Pólizas
             </a>
+            ${profile?.cargo === 'Admin' ? `
             <a href="#" class="nav-item ${currentView === 'companias' ? 'active' : ''}" data-view="companias">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -70,6 +71,7 @@ export async function renderDashboard() {
               </svg>
               Ejecutivos
             </a>
+            ` : ''}
             <a href="#" class="nav-item ${currentView === 'reportes' ? 'active' : ''}" data-view="reportes">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 3v18h18"></path>
@@ -272,6 +274,16 @@ export function setupDashboardHandlers(navigate) {
 }
 
 async function switchView(view) {
+  const profile = await authService.getUserProfile(currentUser.id);
+
+  if ((view === 'companias' || view === 'vendedores') && profile?.cargo !== 'Admin') {
+    currentView = 'home';
+    const container = document.getElementById('view-container');
+    container.innerHTML = await renderHome();
+    setupHomeHandlers();
+    return;
+  }
+
   currentView = view;
 
   document.querySelectorAll('.nav-item').forEach(item => {
@@ -416,21 +428,7 @@ function renderCompaniasView() {
   return `
     <div class="view-header">
       <h1>Gestión de Compañías</h1>
-    </div>
-
-    <div class="card">
-      <h3>Nueva Compañía</h3>
-      <form id="aseguradora-form" class="inline-form">
-        <div class="form-group">
-          <label for="aseg_nombre">Nombre</label>
-          <input type="text" id="aseg_nombre" required />
-        </div>
-        <div class="form-group">
-          <label for="aseg_comision">% Comisión</label>
-          <input type="number" id="aseg_comision" step="0.01" min="0" max="100" required />
-        </div>
-        <button type="submit" class="btn-primary">Agregar</button>
-      </form>
+      <button class="btn-primary" id="new-aseguradora-btn">+ Nueva Compañía</button>
     </div>
 
     ${aseguradoras.length === 0 ? `
@@ -483,28 +481,7 @@ function renderVendedoresView() {
   return `
     <div class="view-header">
       <h1>Gestión de Ejecutivos</h1>
-    </div>
-
-    <div class="card">
-      <h3>Nuevo Ejecutivo</h3>
-      <form id="vendedor-form" class="inline-form">
-        <div class="form-group">
-          <label for="vend_nombre">Nombre</label>
-          <input type="text" id="vend_nombre" required />
-        </div>
-        <div class="form-group">
-          <label for="vend_tipo_comision">Tipo de Comisión</label>
-          <select id="vend_tipo_comision" required>
-            <option value="porcentaje">Porcentaje (%)</option>
-            <option value="prima_bruta_mensual">Prima Bruta Mensual</option>
-          </select>
-        </div>
-        <div class="form-group" id="vend_comision_group">
-          <label for="vend_comision">% Comisión</label>
-          <input type="number" id="vend_comision" step="0.01" min="0" max="100" required />
-        </div>
-        <button type="submit" class="btn-primary">Agregar</button>
-      </form>
+      <button class="btn-primary" id="new-vendedor-btn">+ Nuevo Ejecutivo</button>
     </div>
 
     ${vendedores.length === 0 ? `
@@ -540,10 +517,10 @@ function renderVendedoresView() {
                       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                     </svg>
                   </button>
-                  <button class="btn-icon btn-danger" onclick="window.deleteVendedor('${v.id}')" title="Eliminar">
+                  <button class="btn-icon btn-danger" onclick="window.deleteVendedor('${v.id}')" title="Inactivar">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                      <line x1="9" y1="10" x2="15" y2="10"></line>
                     </svg>
                   </button>
                 </td>
@@ -592,42 +569,18 @@ function setupPolizasHandlers() {
 }
 
 function setupCompaniasHandlers() {
-  const form = document.getElementById('aseguradora-form');
+  const newBtn = document.getElementById('new-aseguradora-btn');
 
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        await aseguradorasService.create({
-          nombre: document.getElementById('aseg_nombre').value,
-          comision_porcentaje: parseFloat(document.getElementById('aseg_comision').value)
-        });
-        window.location.reload();
-      } catch (error) {
-        alert('Error: ' + error.message);
-      }
+  if (newBtn) {
+    newBtn.addEventListener('click', () => {
+      showAseguradoraModal();
     });
   }
 
-  window.editAseguradora = async (id) => {
+  window.editAseguradora = (id) => {
     const aseg = aseguradoras.find(a => a.id === id);
     if (!aseg) return;
-
-    const newNombre = prompt('Nombre:', aseg.nombre);
-    if (!newNombre) return;
-
-    const newComision = prompt('% Comisión:', aseg.comision_porcentaje);
-    if (!newComision) return;
-
-    try {
-      await aseguradorasService.update(id, {
-        nombre: newNombre,
-        comision_porcentaje: parseFloat(newComision)
-      });
-      window.location.reload();
-    } catch (error) {
-      alert('Error: ' + error.message);
-    }
+    showAseguradoraModal(aseg);
   };
 
   window.deleteAseguradora = async (id) => {
@@ -643,65 +596,22 @@ function setupCompaniasHandlers() {
 }
 
 function setupVendedoresHandlers() {
-  const form = document.getElementById('vendedor-form');
-  const tipoComisionSelect = document.getElementById('vend_tipo_comision');
-  const comisionGroup = document.getElementById('vend_comision_group');
-  const comisionInput = document.getElementById('vend_comision');
-  const comisionLabel = comisionGroup?.querySelector('label');
+  const newBtn = document.getElementById('new-vendedor-btn');
 
-  if (tipoComisionSelect && comisionGroup && comisionLabel) {
-    tipoComisionSelect.addEventListener('change', (e) => {
-      if (e.target.value === 'prima_bruta_mensual') {
-        comisionGroup.style.display = 'none';
-        comisionInput.required = false;
-      } else {
-        comisionGroup.style.display = 'block';
-        comisionInput.required = true;
-      }
+  if (newBtn) {
+    newBtn.addEventListener('click', () => {
+      showVendedorModal();
     });
   }
 
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        const tipoComision = document.getElementById('vend_tipo_comision').value;
-        const vendedorData = {
-          nombre: document.getElementById('vend_nombre').value,
-          tipo_comision: tipoComision,
-          comision_porcentaje: tipoComision === 'porcentaje' ? parseFloat(document.getElementById('vend_comision').value) : 0
-        };
-        await vendedoresService.create(vendedorData);
-        window.location.reload();
-      } catch (error) {
-        alert('Error: ' + error.message);
-      }
-    });
-  }
-
-  window.editVendedor = async (id) => {
+  window.editVendedor = (id) => {
     const vend = vendedores.find(v => v.id === id);
     if (!vend) return;
-
-    const newNombre = prompt('Nombre:', vend.nombre);
-    if (!newNombre) return;
-
-    const newComision = prompt('% Comisión:', vend.comision_porcentaje);
-    if (!newComision) return;
-
-    try {
-      await vendedoresService.update(id, {
-        nombre: newNombre,
-        comision_porcentaje: parseFloat(newComision)
-      });
-      window.location.reload();
-    } catch (error) {
-      alert('Error: ' + error.message);
-    }
+    showVendedorModal(vend);
   };
 
   window.deleteVendedor = async (id) => {
-    if (confirm('¿Eliminar este vendedor?')) {
+    if (confirm('¿Inactivar este ejecutivo?')) {
       try {
         await vendedoresService.delete(id);
         window.location.reload();
@@ -1285,6 +1195,153 @@ function showImportModal() {
 
   cancelBtn.addEventListener('click', () => {
     modalContainer.innerHTML = '';
+  });
+}
+
+function showAseguradoraModal(aseguradora = null) {
+  const isEdit = !!aseguradora;
+  const modalContainer = document.getElementById('modal-container');
+
+  modalContainer.innerHTML = `
+    <div class="modal">
+      <div class="modal-content">
+        <h2>${isEdit ? 'Editar Compañía' : 'Nueva Compañía'}</h2>
+        <form id="edit-aseguradora-form">
+          <div class="form-group">
+            <label for="edit_aseg_nombre">Nombre</label>
+            <input type="text" id="edit_aseg_nombre" value="${aseguradora?.nombre || ''}" required />
+          </div>
+          <div class="form-group">
+            <label for="edit_aseg_comision">% Comisión</label>
+            <input type="number" id="edit_aseg_comision" step="0.01" min="0" max="100" value="${aseguradora?.comision_porcentaje || ''}" required />
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn-secondary" id="cancel-edit-aseg-btn">Cancelar</button>
+            <button type="submit" class="btn-primary">${isEdit ? 'Actualizar' : 'Crear'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+
+  const form = document.getElementById('edit-aseguradora-form');
+  const cancelBtn = document.getElementById('cancel-edit-aseg-btn');
+
+  cancelBtn.addEventListener('click', () => {
+    modalContainer.innerHTML = '';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById('edit_aseg_nombre').value.trim();
+    const comision = parseFloat(document.getElementById('edit_aseg_comision').value);
+
+    if (!nombre) {
+      alert('El nombre es requerido');
+      return;
+    }
+
+    try {
+      if (isEdit) {
+        await aseguradorasService.update(aseguradora.id, {
+          nombre,
+          comision_porcentaje: comision
+        });
+      } else {
+        await aseguradorasService.create({
+          nombre,
+          comision_porcentaje: comision
+        });
+      }
+      window.location.reload();
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
+  });
+}
+
+function showVendedorModal(vendedor = null) {
+  const isEdit = !!vendedor;
+  const modalContainer = document.getElementById('modal-container');
+
+  modalContainer.innerHTML = `
+    <div class="modal">
+      <div class="modal-content">
+        <h2>${isEdit ? 'Editar Ejecutivo' : 'Nuevo Ejecutivo'}</h2>
+        <form id="edit-vendedor-form">
+          <div class="form-group">
+            <label for="edit_vend_nombre">Nombre</label>
+            <input type="text" id="edit_vend_nombre" value="${vendedor?.nombre || ''}" required />
+          </div>
+          <div class="form-group">
+            <label for="edit_vend_tipo_comision">Tipo de Comisión</label>
+            <select id="edit_vend_tipo_comision" required>
+              <option value="porcentaje" ${vendedor?.tipo_comision === 'porcentaje' ? 'selected' : ''}>Porcentaje (%)</option>
+              <option value="prima_bruta_mensual" ${vendedor?.tipo_comision === 'prima_bruta_mensual' ? 'selected' : ''}>Prima Bruta Mensual</option>
+            </select>
+          </div>
+          <div class="form-group" id="edit_vend_comision_group" style="display: ${vendedor?.tipo_comision === 'prima_bruta_mensual' ? 'none' : 'block'};">
+            <label for="edit_vend_comision">% Comisión</label>
+            <input type="number" id="edit_vend_comision" step="0.01" min="0" max="100" value="${vendedor?.comision_porcentaje || ''}" required />
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn-secondary" id="cancel-edit-vend-btn">Cancelar</button>
+            <button type="submit" class="btn-primary">${isEdit ? 'Actualizar' : 'Crear'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+
+  const form = document.getElementById('edit-vendedor-form');
+  const cancelBtn = document.getElementById('cancel-edit-vend-btn');
+  const tipoSelect = document.getElementById('edit_vend_tipo_comision');
+  const comisionGroup = document.getElementById('edit_vend_comision_group');
+  const comisionInput = comisionGroup.querySelector('input');
+
+  tipoSelect.addEventListener('change', (e) => {
+    if (e.target.value === 'prima_bruta_mensual') {
+      comisionGroup.style.display = 'none';
+      comisionInput.required = false;
+    } else {
+      comisionGroup.style.display = 'block';
+      comisionInput.required = true;
+    }
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    modalContainer.innerHTML = '';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById('edit_vend_nombre').value.trim();
+    const tipoComision = document.getElementById('edit_vend_tipo_comision').value;
+    const comision = tipoComision === 'porcentaje' ? parseFloat(document.getElementById('edit_vend_comision').value) : 0;
+
+    if (!nombre) {
+      alert('El nombre es requerido');
+      return;
+    }
+
+    try {
+      const vendedorData = {
+        nombre,
+        tipo_comision: tipoComision,
+        comision_porcentaje: comision
+      };
+
+      if (isEdit) {
+        await vendedoresService.update(vendedor.id, vendedorData);
+      } else {
+        await vendedoresService.create(vendedorData);
+      }
+      window.location.reload();
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
   });
 }
 

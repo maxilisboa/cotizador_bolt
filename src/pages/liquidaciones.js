@@ -23,61 +23,85 @@ export async function renderLiquidaciones() {
   }
 
   const html = `
-    <div class="container">
-      <div class="page-header">
-        <h1>Liquidaciones de Sueldos</h1>
-        <button class="btn btn-primary" onclick="window.mostrarModalGenerarLiquidacion()">
-          + Generar Liquidación
-        </button>
-      </div>
+    <div class="view-header">
+      <h1>Liquidaciones de Sueldos</h1>
+      <button class="btn-primary" onclick="window.mostrarModalGenerarLiquidacion()">
+        + Generar Liquidación
+      </button>
+    </div>
 
-      <div class="filters-card" style="margin-bottom: 1.5rem;">
-        <div style="display: flex; gap: 1rem; align-items: center;">
-          <div style="flex: 0 0 auto;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #2c3e50;">Filtrar por período:</label>
-          </div>
-          <div style="flex: 0 0 auto;">
-            <select id="filtroMes" onchange="window.filtrarLiquidaciones()" style="padding: 0.5rem 2rem 0.5rem 0.75rem; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-              <option value="">Todos los meses</option>
-              <option value="1">Enero</option>
-              <option value="2">Febrero</option>
-              <option value="3">Marzo</option>
-              <option value="4">Abril</option>
-              <option value="5">Mayo</option>
-              <option value="6">Junio</option>
-              <option value="7">Julio</option>
-              <option value="8">Agosto</option>
-              <option value="9">Septiembre</option>
-              <option value="10">Octubre</option>
-              <option value="11">Noviembre</option>
-              <option value="12">Diciembre</option>
-            </select>
-          </div>
-          <div style="flex: 0 0 auto;">
-            <select id="filtroAnio" onchange="window.filtrarLiquidaciones()" style="padding: 0.5rem 2rem 0.5rem 0.75rem; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-              <option value="">Todos los años</option>
-              <option value="2026">2026</option>
-              <option value="2025">2025</option>
-              <option value="2024">2024</option>
-            </select>
-          </div>
+    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-bottom: 32px;">
+      <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+        <div style="flex: 0 0 auto;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #1e293b; font-size: 13px;">Mes</label>
+          <select id="filtroMes" onchange="window.filtrarLiquidaciones()" style="padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white; cursor: pointer; font-size: 14px;">
+            <option value="">Todos los meses</option>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+        </div>
+        <div style="flex: 0 0 auto;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #1e293b; font-size: 13px;">Año</label>
+          <select id="filtroAnio" onchange="window.filtrarLiquidaciones()" style="padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white; cursor: pointer; font-size: 14px;">
+            <option value="">Todos los años</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
         </div>
       </div>
+    </div>
 
-      <div class="stats-grid" style="margin-bottom: 2rem;">
-        <div class="stat-card">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #fef3c7;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-info">
           <div class="stat-label">Valor UF Actual</div>
-          <div class="stat-value" id="valorUFActual">-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Liquidaciones</div>
-          <div class="stat-value" id="totalLiquidaciones">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total a Pagar</div>
-          <div class="stat-value" id="totalAPagar">$0</div>
+          <div class="stat-value" id="valorUFActual" style="font-size: 20px;">-</div>
         </div>
       </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #e0e7ff;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="13" x2="8" y2="13"></line>
+            <line x1="12" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-label">Cantidad de Liquidaciones</div>
+          <div class="stat-value" id="totalLiquidaciones" style="font-size: 20px;">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #e0e7ff;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-label">Total a Pagar</div>
+          <div class="stat-value" id="totalAPagar" style="font-size: 20px;">$0</div>
+        </div>
+      </div>
+    </div>
 
       <div class="table-container">
         <table class="data-table">
@@ -95,79 +119,70 @@ export async function renderLiquidaciones() {
           </thead>
           <tbody id="tableLiquidaciones">
             <tr>
-              <td colspan="8" style="text-align: center; padding: 2rem;">
+              <td colspan="8" style="text-align: center; padding: 32px; color: #94a3b8;">
                 Cargando liquidaciones...
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-    </div>
 
     <div id="modalGenerarLiquidacion" class="modal" style="display: none;">
-      <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header">
-          <h2>Generar Liquidación</h2>
-          <button class="close-btn" onclick="window.cerrarModalGenerarLiquidacion()">&times;</button>
-        </div>
-        <div class="modal-body">
-          <form id="formGenerarLiquidacion" onsubmit="window.handleGenerarLiquidacion(event)">
-            <div class="form-group">
-              <label for="vendedorSelect">Vendedor *</label>
-              <select id="vendedorSelect" required>
-                <option value="">Seleccione un vendedor</option>
-              </select>
-            </div>
+      <div class="modal-content">
+        <h2>Generar Liquidación</h2>
+        <form id="formGenerarLiquidacion" onsubmit="window.handleGenerarLiquidacion(event)">
+          <div class="form-group">
+            <label for="vendedorSelect">Vendedor *</label>
+            <select id="vendedorSelect" required>
+              <option value="">Seleccione un vendedor</option>
+            </select>
+          </div>
 
-            <div class="form-group">
-              <label for="mesSelect">Mes *</label>
-              <select id="mesSelect" required>
-                <option value="">Seleccione el mes</option>
-                <option value="1">Enero</option>
-                <option value="2">Febrero</option>
-                <option value="3">Marzo</option>
-                <option value="4">Abril</option>
-                <option value="5">Mayo</option>
-                <option value="6">Junio</option>
-                <option value="7">Julio</option>
-                <option value="8">Agosto</option>
-                <option value="9">Septiembre</option>
-                <option value="10">Octubre</option>
-                <option value="11">Noviembre</option>
-                <option value="12">Diciembre</option>
-              </select>
-            </div>
+          <div class="form-group">
+            <label for="mesSelect">Mes *</label>
+            <select id="mesSelect" required>
+              <option value="">Seleccione el mes</option>
+              <option value="1">Enero</option>
+              <option value="2">Febrero</option>
+              <option value="3">Marzo</option>
+              <option value="4">Abril</option>
+              <option value="5">Mayo</option>
+              <option value="6">Junio</option>
+              <option value="7">Julio</option>
+              <option value="8">Agosto</option>
+              <option value="9">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+          </div>
 
-            <div class="form-group">
-              <label for="anioSelect">Año *</label>
-              <select id="anioSelect" required>
-                <option value="">Seleccione el año</option>
-                <option value="2026">2026</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-              </select>
-            </div>
+          <div class="form-group">
+            <label for="anioSelect">Año *</label>
+            <select id="anioSelect" required>
+              <option value="">Seleccione el año</option>
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+            </select>
+          </div>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn-secondary" onclick="window.cerrarModalGenerarLiquidacion()">
-                Cancelar
-              </button>
-              <button type="submit" class="btn btn-primary">
-                Generar
-              </button>
-            </div>
-          </form>
-        </div>
+          <div class="btn-group">
+            <button type="button" class="btn-secondary" onclick="window.cerrarModalGenerarLiquidacion()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary">
+              Generar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
     <div id="modalDetalleLiquidacion" class="modal" style="display: none;">
-      <div class="modal-content" style="max-width: 1200px;">
-        <div class="modal-header">
-          <h2>Detalle de Liquidación</h2>
-          <button class="close-btn" onclick="window.cerrarModalDetalleLiquidacion()">&times;</button>
-        </div>
-        <div class="modal-body" id="detalleContent">
+      <div class="modal-content" style="max-width: 1200px; width: 95%; max-height: 90vh;">
+        <h2>Detalle de Liquidación</h2>
+        <div id="detalleContent" style="margin-top: 24px;">
         </div>
       </div>
     </div>
@@ -225,8 +240,15 @@ function renderTablaLiquidaciones() {
   if (!liquidaciones || liquidaciones.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="8" style="text-align: center; padding: 2rem; color: #666;">
-          No hay liquidaciones generadas
+        <td colspan="8">
+          <div class="empty-state" style="margin: 0; box-shadow: none; padding: 40px 20px;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <h3>No hay liquidaciones registradas</h3>
+            <p>Comienza generando tu primera liquidación</p>
+          </div>
         </td>
       </tr>
     `;
@@ -246,12 +268,19 @@ function renderTablaLiquidaciones() {
         <td>${formatearMoneda(liq.total_honorarios)}</td>
         <td>${formatearMoneda(liq.retencion_impuesto)}</td>
         <td><strong>${formatearMoneda(liq.total_liquido)}</strong></td>
-        <td>
-          <button class="btn btn-small btn-primary" onclick="window.verDetalleLiquidacion('${liq.id}')">
-            Ver Detalle
+        <td style="display: flex; gap: 8px;">
+          <button class="btn-icon" onclick="window.verDetalleLiquidacion('${liq.id}')" title="Ver Detalle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
           </button>
-          <button class="btn btn-small btn-secondary" onclick="window.descargarPDF('${liq.id}')">
-            PDF
+          <button class="btn-icon" onclick="window.descargarPDF('${liq.id}')" title="Descargar PDF">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
           </button>
         </td>
       </tr>
@@ -347,103 +376,103 @@ window.verDetalleLiquidacion = async function(liquidacionId) {
           </div>
         </div>
 
-        <div style="background: linear-gradient(135deg, #8B4789 0%, #9b59b6 100%); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-          <h3 style="margin: 0 0 0.5rem 0;">BOLETA HONORARIOS</h3>
+        <div style="background: #6366f1; color: white; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+          <h3 style="margin: 0; font-size: 16px; font-weight: 600;">BOLETA HONORARIOS</h3>
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
-          <tr style="background: #f8f9fa;">
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; font-weight: bold;">Ventas de seguros</td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6;"></td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">${formatearMoneda(liquidacion.total_comision_clp)}</td>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
+          <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px; font-weight: 600; color: #1e293b;">Ventas de seguros</td>
+            <td style="padding: 12px 16px;"></td>
+            <td style="padding: 12px 16px; text-align: right; color: #1e293b;">${formatearMoneda(liquidacion.total_comision_clp)}</td>
           </tr>
-          <tr>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6;"></td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; font-weight: bold; color: red;">Negativa (x fuga)</td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right; color: red;">${formatearMoneda(liquidacion.negativa_fuga)}</td>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;"></td>
+            <td style="padding: 12px 16px; font-weight: 600; color: #dc2626;">Negativa (x fuga)</td>
+            <td style="padding: 12px 16px; text-align: right; color: #dc2626;">${formatearMoneda(liquidacion.negativa_fuga)}</td>
           </tr>
-          <tr style="background: #f8f9fa;">
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6;"></td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; font-weight: bold;">Total Honorarios</td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">${formatearMoneda(liquidacion.total_honorarios)}</td>
+          <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;"></td>
+            <td style="padding: 12px 16px; font-weight: 600; color: #1e293b;">Total Honorarios</td>
+            <td style="padding: 12px 16px; text-align: right; color: #1e293b;">${formatearMoneda(liquidacion.total_honorarios)}</td>
           </tr>
-          <tr>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6;"></td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; font-weight: bold;">${liquidacion.porcentaje_retencion}% Impto. Retenido</td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">${formatearMoneda(liquidacion.retencion_impuesto)}</td>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;"></td>
+            <td style="padding: 12px 16px; font-weight: 600; color: #1e293b;">${liquidacion.porcentaje_retencion}% Impto. Retenido</td>
+            <td style="padding: 12px 16px; text-align: right; color: #1e293b;">${formatearMoneda(liquidacion.retencion_impuesto)}</td>
           </tr>
-          <tr style="background: linear-gradient(135deg, #8B4789 0%, #9b59b6 100%); color: white; font-weight: bold;">
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6;"></td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Total Líquido</td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">${formatearMoneda(liquidacion.total_liquido)}</td>
+          <tr style="background: #6366f1; color: white; font-weight: 600;">
+            <td style="padding: 12px 16px;"></td>
+            <td style="padding: 12px 16px;">Total Líquido</td>
+            <td style="padding: 12px 16px; text-align: right;">${formatearMoneda(liquidacion.total_liquido)}</td>
           </tr>
         </table>
 
-        <div style="background: linear-gradient(135deg, #8B4789 0%, #9b59b6 100%); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-          <h3 style="margin: 0;">Tabla ${liquidacion.vendedores?.nombre || 'Vendedor'}</h3>
+        <div style="background: #6366f1; color: white; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+          <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Tabla ${liquidacion.vendedores?.nombre || 'Vendedor'}</h3>
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
-          <tr style="background: #2c3e50; color: white;">
-            <th style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: left;">${liquidacion.vendedores?.nombre || 'Vendedor'}</th>
-            <th style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: center;">Comisión en UF</th>
-            <th style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: center;">Comisión en $</th>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
+          <tr style="background: #1e293b; color: white;">
+            <th style="padding: 12px 16px; border: 1px solid #e2e8f0; text-align: left; font-weight: 600;">${liquidacion.vendedores?.nombre || 'Vendedor'}</th>
+            <th style="padding: 12px 16px; border: 1px solid #e2e8f0; text-align: center; font-weight: 600;">Comisión en UF</th>
+            <th style="padding: 12px 16px; border: 1px solid #e2e8f0; text-align: center; font-weight: 600;">Comisión en $</th>
           </tr>
-          <tr>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; font-weight: bold;">${liquidacion.vendedores?.nombre || 'Vendedor'}</td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">${formatearUF(liquidacion.total_comision_uf)}</td>
-            <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">${formatearMoneda(liquidacion.total_honorarios)}</td>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px; font-weight: 600; color: #1e293b;">${liquidacion.vendedores?.nombre || 'Vendedor'}</td>
+            <td style="padding: 12px 16px; text-align: right; color: #1e293b;">${formatearUF(liquidacion.total_comision_uf)}</td>
+            <td style="padding: 12px 16px; text-align: right; color: #1e293b;">${formatearMoneda(liquidacion.total_honorarios)}</td>
           </tr>
         </table>
     `;
 
     if (liquidacion.detallePolizas && liquidacion.detallePolizas.length > 0) {
       html += `
-        <div style="background: linear-gradient(135deg, #8B4789 0%, #9b59b6 100%); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-          <h3 style="margin: 0;">Detalle de Pólizas</h3>
+        <div style="background: #6366f1; color: white; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+          <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Detalle de Pólizas</h3>
         </div>
         <div style="overflow-x: auto;">
           <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
             <thead>
-              <tr style="background: #2c3e50; color: white;">
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Mes</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Año</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Categoría</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Estado</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Fecha</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Aseguradora</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Prima Bruta Anual</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Anual en UF</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Comisión $</th>
-                <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Comisión UF</th>
+              <tr style="background: #1e293b; color: white;">
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Mes</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Año</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Categoría</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Estado</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Fecha</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Aseguradora</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Prima Bruta Anual</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Anual en UF</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Comisión $</th>
+                <th style="padding: 10px 12px; border: 1px solid #e2e8f0; font-weight: 600; font-size: 13px;">Comisión UF</th>
               </tr>
             </thead>
             <tbody>
       `;
 
       liquidacion.detallePolizas.forEach((poliza, idx) => {
-        const bgColor = idx % 2 === 0 ? '#ffffff' : '#f8b6d9';
+        const bgColor = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
         html += `
-          <tr style="background: ${bgColor};">
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6; text-align: center;">${poliza.mes}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6; text-align: center;">${poliza.anio}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6;">${poliza.categoria}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6;">${poliza.estado}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6;">${new Date(poliza.fecha).toLocaleDateString('es-CL')}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6;">${poliza.aseguradora}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6; text-align: right;">${formatearMoneda(poliza.prima_bruta_anual)}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6; text-align: right;">${formatearUF(poliza.anual_en_uf)}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6; text-align: right;">${formatearMoneda(poliza.comision_clp)}</td>
-            <td style="padding: 0.5rem; border: 1px solid #dee2e6; text-align: right;">${formatearUF(poliza.comision_uf)}</td>
+          <tr style="background: ${bgColor}; border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 10px 12px; text-align: center; font-size: 13px;">${poliza.mes}</td>
+            <td style="padding: 10px 12px; text-align: center; font-size: 13px;">${poliza.anio}</td>
+            <td style="padding: 10px 12px; font-size: 13px;">${poliza.categoria}</td>
+            <td style="padding: 10px 12px; font-size: 13px;">${poliza.estado}</td>
+            <td style="padding: 10px 12px; font-size: 13px;">${new Date(poliza.fecha).toLocaleDateString('es-CL')}</td>
+            <td style="padding: 10px 12px; font-size: 13px;">${poliza.aseguradora}</td>
+            <td style="padding: 10px 12px; text-align: right; font-size: 13px;">${formatearMoneda(poliza.prima_bruta_anual)}</td>
+            <td style="padding: 10px 12px; text-align: right; font-size: 13px;">${formatearUF(poliza.anual_en_uf)}</td>
+            <td style="padding: 10px 12px; text-align: right; font-size: 13px;">${formatearMoneda(poliza.comision_clp)}</td>
+            <td style="padding: 10px 12px; text-align: right; font-size: 13px;">${formatearUF(poliza.comision_uf)}</td>
           </tr>
         `;
       });
 
       html += `
-              <tr style="background: linear-gradient(135deg, #8B4789 0%, #9b59b6 100%); color: white; font-weight: bold;">
-                <td colspan="8" style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">Total general</td>
-                <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">${formatearMoneda(liquidacion.total_honorarios)}</td>
-                <td style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: right;">${formatearUF(liquidacion.total_comision_uf)}</td>
+              <tr style="background: #6366f1; color: white; font-weight: 600;">
+                <td colspan="8" style="padding: 12px 16px; text-align: right;">Total general</td>
+                <td style="padding: 12px 16px; text-align: right;">${formatearMoneda(liquidacion.total_honorarios)}</td>
+                <td style="padding: 12px 16px; text-align: right;">${formatearUF(liquidacion.total_comision_uf)}</td>
               </tr>
             </tbody>
           </table>
@@ -452,8 +481,11 @@ window.verDetalleLiquidacion = async function(liquidacionId) {
     }
 
     html += `
-        <div style="margin-top: 2rem; text-align: right;">
-          <button class="btn btn-primary" onclick="window.descargarPDF('${liquidacion.id}')">
+        <div style="margin-top: 32px; display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn-secondary" onclick="window.cerrarModalDetalleLiquidacion()">
+            Cerrar
+          </button>
+          <button class="btn-primary" onclick="window.descargarPDF('${liquidacion.id}')">
             Descargar PDF
           </button>
         </div>

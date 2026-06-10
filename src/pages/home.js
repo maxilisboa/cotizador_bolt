@@ -75,7 +75,7 @@ export async function renderHome() {
         <div style="display: flex; gap: 16px;">
           <div style="background: white; padding: 12px 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
             <div style="font-size: 11px; color: #6b7280; font-weight: 600; margin-bottom: 4px;">UF</div>
-            <div style="font-size: 18px; font-weight: 700; color: #0ea5e9;">$${UF_VALUE.toLocaleString('es-CL', {maximumFractionDigits: 2})}</div>
+            <div style="font-size: 18px; font-weight: 700; color: #2563eb;">$${UF_VALUE.toLocaleString('es-CL', {maximumFractionDigits: 2})}</div>
           </div>
           <div style="background: white; padding: 12px 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
             <div style="font-size: 11px; color: #6b7280; font-weight: 600; margin-bottom: 4px;">USD</div>
@@ -85,15 +85,15 @@ export async function renderHome() {
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px;">
-        <div style="background: white; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #0ea5e9;">
+        <div style="background: white; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #2563eb;">
           <div style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Total Pólizas</div>
-          <div style="font-size: 36px; font-weight: 700; color: #0ea5e9;">${totalPolizas}</div>
+          <div style="font-size: 36px; font-weight: 700; color: #2563eb;">${totalPolizas}</div>
           <div style="color: #9ca3af; font-size: 13px; margin-top: 4px;">Este mes</div>
         </div>
 
-        <div style="background: white; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #8b5cf6;">
+        <div style="background: white; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #7c3aed;">
           <div style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Comisión Total</div>
-          <div style="font-size: 28px; font-weight: 700; color: #8b5cf6;">${comisionTotalUF.toFixed(2)} UF</div>
+          <div style="font-size: 28px; font-weight: 700; color: #7c3aed;">${comisionTotalUF.toFixed(2)} UF</div>
           <div style="color: #7c3aed; font-size: 16px; margin-top: 4px;">$${comisionTotalCLP.toLocaleString('es-CL', {maximumFractionDigits: 0})}</div>
         </div>
 
@@ -121,7 +121,7 @@ export async function renderHome() {
                   <div style="font-size: 13px; color: #6b7280;">${v.polizas} pólizas</div>
                 </div>
                 <div style="text-align: right;">
-                  <div style="font-weight: 700; color: #0ea5e9; font-size: 18px;">${v.comision.toFixed(2)} UF</div>
+                  <div style="font-weight: 700; color: #2563eb; font-size: 18px;">${v.comision.toFixed(2)} UF</div>
                   <div style="font-size: 13px; color: #6b7280;">$${(v.comision * UF_VALUE).toLocaleString('es-CL', {maximumFractionDigits: 0})}</div>
                 </div>
               </div>
@@ -142,7 +142,7 @@ export async function renderHome() {
                     <span style="font-size: 14px; color: #6b7280; font-weight: 600;">${v.polizas}</span>
                   </div>
                   <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
-                    <div style="background: linear-gradient(90deg, #0ea5e9, #06b6d4); height: 100%; width: ${percentage}%; transition: width 0.3s ease;"></div>
+                    <div style="background: linear-gradient(90deg, #2563eb, #7c3aed); height: 100%; width: ${percentage}%; transition: width 0.3s ease;"></div>
                   </div>
                 </div>
               `;
@@ -169,7 +169,7 @@ export async function renderHome() {
                 <tr>
                   <td style="font-weight: 500;">${v.nombre}</td>
                   <td style="text-align: center;">${v.polizas}</td>
-                  <td style="text-align: right; font-weight: 600; color: #0ea5e9;">${v.comision.toFixed(2)}</td>
+                  <td style="text-align: right; font-weight: 600; color: #2563eb;">${v.comision.toFixed(2)}</td>
                   <td style="text-align: right;">$${(v.comision * UF_VALUE).toLocaleString('es-CL', {maximumFractionDigits: 0})}</td>
                   <td style="text-align: right;">${v.polizas > 0 ? (v.comision / v.polizas).toFixed(2) : '0.00'} UF</td>
                 </tr>
@@ -179,7 +179,7 @@ export async function renderHome() {
               <tr style="background: #f9fafb; font-weight: 700;">
                 <td>TOTAL</td>
                 <td style="text-align: center;">${totalPolizas}</td>
-                <td style="text-align: right; color: #0ea5e9;">${comisionVendedorUF.toFixed(2)}</td>
+                <td style="text-align: right; color: #2563eb;">${comisionVendedorUF.toFixed(2)}</td>
                 <td style="text-align: right;">$${comisionVendedorCLP.toLocaleString('es-CL', {maximumFractionDigits: 0})}</td>
                 <td style="text-align: right;">${totalPolizas > 0 ? (comisionVendedorUF / totalPolizas).toFixed(2) : '0.00'} UF</td>
               </tr>
