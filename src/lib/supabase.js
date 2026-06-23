@@ -7,4 +7,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('VITE_SUPABASE_URL o VITE_SUPABASE_ANON_KEY no están configuradas.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);"// Trigger actualizacion vars: 14:55" 
