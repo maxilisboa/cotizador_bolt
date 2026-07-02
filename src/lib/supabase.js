@@ -8,3 +8,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);"// Trigger actualizacion vars: 14:55" 
+"// Build ref: 15:45" 
