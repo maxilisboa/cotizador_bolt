@@ -34,7 +34,7 @@ export async function renderDashboard() {
       <div class="app-layout">
         <aside class="sidebar">
           <div class="sidebar-header">
-            <img src="/logo-blanco-sin-fondo.png" alt="Seguros LIVE" />
+            <img src="/logo-dashboard.png" alt="Seguros LIVE" />
           </div>
           <nav class="sidebar-nav">
             <a href="#" class="nav-item ${currentView === 'home' ? 'active' : ''}" data-view="home">

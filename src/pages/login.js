@@ -4,7 +4,10 @@ export function renderLogin() {
   return `
     <div class="auth-container">
       <div class="auth-card">
-        <h1>Sistema de Cotización de Seguros</h1>
+        <div style="text-align: center; margin-bottom: 24px;">
+          <img src="/Logo.png" alt="Seguros LIVE" style="max-width: 240px; width: 100%; height: auto;" />
+        </div>
+        <h1 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 8px;">Sistema de Cotización</h1>
         <div id="auth-message"></div>
         <form id="login-form">
           <div class="form-group">
@@ -21,7 +24,6 @@ export function renderLogin() {
     </div>
   `;
 }
-
 
 export function setupLoginHandlers(navigate) {
   const loginForm = document.getElementById('login-form');
